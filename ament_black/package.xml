@@ -5,8 +5,10 @@
   <version>0.8.1</version>
   <description>
     The ability to check code against style conventions using
-    black and generate xUnit test result files.</description>
-  <maintainer email="tylerjw@gamil.com">Tyler Weaver</maintainer>
+    black and generate xUnit test result files.
+  </description>
+  <maintainer email="tim.clephas@nobleo.nl">Tim Clephas</maintainer>
+  <author email="tylerjw@gamil.com">Tyler Weaver</author>
   <license>Apache License 2.0</license>
 
   <exec_depend>black</exec_depend>
