@@ -40,6 +40,12 @@ def main(argv=sys.argv[1:]):
         "in %s will be considered." % ", ".join(["'.%s'" % e for e in extensions]),
     )
     parser.add_argument(
+        '--config',
+        metavar='path',
+        default=None,
+        dest='config_file',
+        help='The config file')
+    parser.add_argument(
         "--reformat", action="store_true", help="Reformat the files in place"
     )
     # not using a file handle directly
@@ -71,6 +77,8 @@ def main(argv=sys.argv[1:]):
 
     # invoke black
     cmd = [black_bin, "--diff"]
+    if args.config is not None:
+        cmd.extend(["--config", args.config])
     cmd.extend(files)
 
     proc = subprocess.Popen(
@@ -99,6 +107,8 @@ def main(argv=sys.argv[1:]):
     # overwrite original with reformatted files
     if args.reformat and changed_files:
         cmd = [black_bin]
+        if args.config is not None:
+            cmd.extend(["--config", args.config])
         cmd.extend(files)
         try:
             subprocess.check_call(cmd)
