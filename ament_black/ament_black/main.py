@@ -77,8 +77,8 @@ def main(argv=sys.argv[1:]):
 
     # invoke black
     cmd = [black_bin, "--diff"]
-    if args.config is not None:
-        cmd.extend(["--config", args.config])
+    if args.config_file is not None:
+        cmd.extend(["--config", args.config_file])
     cmd.extend(files)
 
     proc = subprocess.Popen(
@@ -107,8 +107,8 @@ def main(argv=sys.argv[1:]):
     # overwrite original with reformatted files
     if args.reformat and changed_files:
         cmd = [black_bin]
-        if args.config is not None:
-            cmd.extend(["--config", args.config])
+        if args.config_file is not None:
+            cmd.extend(["--config", args.config_file])
         cmd.extend(files)
         try:
             subprocess.check_call(cmd)
