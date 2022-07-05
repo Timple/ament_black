@@ -40,12 +40,24 @@ def main(argv=sys.argv[1:]):
         "in %s will be considered." % ", ".join(["'.%s'" % e for e in extensions]),
     )
     parser.add_argument(
+        '--config',
+        metavar='path',
+        default=None,
+        dest='config_file',
+        help='The config file')
+    parser.add_argument(
         "--reformat", action="store_true", help="Reformat the files in place"
     )
     # not using a file handle directly
     # in order to prevent leaving an empty file when something fails early
     parser.add_argument("--xunit-file", help="Generate a xunit compliant XML file")
     args = parser.parse_args(argv)
+
+    # if we have specified a config file, make sure it exists and abort if not
+    if args.config_file is not None and not os.path.exists(args.config_file):
+        print("Could not find config file '%s'" % args.config_file,
+              file=sys.stderr)
+        return 1
 
     if args.xunit_file:
         start_time = time.time()
@@ -71,6 +83,8 @@ def main(argv=sys.argv[1:]):
 
     # invoke black
     cmd = [black_bin, "--diff"]
+    if args.config_file is not None:
+        cmd.extend(["--config", args.config_file])
     cmd.extend(files)
 
     proc = subprocess.Popen(
@@ -99,6 +113,8 @@ def main(argv=sys.argv[1:]):
     # overwrite original with reformatted files
     if args.reformat and changed_files:
         cmd = [black_bin]
+        if args.config_file is not None:
+            cmd.extend(["--config", args.config_file])
         cmd.extend(files)
         try:
             subprocess.check_call(cmd)

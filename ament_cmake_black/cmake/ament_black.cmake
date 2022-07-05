@@ -36,7 +36,9 @@ function(ament_black)
   set(result_file "${AMENT_TEST_RESULTS_DIR}/${PROJECT_NAME}/${ARG_TESTNAME}.xunit.xml")
   set(cmd "${ament_black_BIN}" "--xunit-file" "${result_file}")
   list(APPEND cmd ${ARG_UNPARSED_ARGUMENTS})
-
+  if(ARG_CONFIG_FILE)
+    list(APPEND cmd "--config" "${ARG_CONFIG_FILE}")
+  endif()
   file(MAKE_DIRECTORY "${CMAKE_BINARY_DIR}/ament_black")
   ament_add_test(
     "${ARG_TESTNAME}"

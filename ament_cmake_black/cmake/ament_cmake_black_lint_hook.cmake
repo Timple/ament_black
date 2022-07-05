@@ -14,6 +14,7 @@
 
 file(GLOB_RECURSE _source_files FOLLOW_SYMLINKS
   "*.py"
+  "*.pyi"
 )
 if(_source_files)
   message(STATUS "Added test 'black' to check Python code style")
