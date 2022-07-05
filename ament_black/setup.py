@@ -32,5 +32,5 @@ The ability to check code against style conventions using black
 and generate xUnit test result files.""",
     license="Apache License, Version 2.0, BSD",
     tests_require=["pytest"],
-    entry_points={"console_scripts": ["ament_black = ament_black.main:main",],},
+    entry_points={"console_scripts": ["ament_black = ament_black.main:main"]},
 )

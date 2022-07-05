@@ -19,7 +19,6 @@ import os
 import subprocess
 import sys
 import time
-from xml.etree import ElementTree
 from xml.sax.saxutils import escape
 from xml.sax.saxutils import quoteattr
 from unidiff import PatchSet
@@ -40,11 +39,12 @@ def main(argv=sys.argv[1:]):
         "in %s will be considered." % ", ".join(["'.%s'" % e for e in extensions]),
     )
     parser.add_argument(
-        '--config',
-        metavar='path',
+        "--config",
+        metavar="path",
         default=None,
-        dest='config_file',
-        help='The config file')
+        dest="config_file",
+        help="The config file",
+    )
     parser.add_argument(
         "--reformat", action="store_true", help="Reformat the files in place"
     )
@@ -55,8 +55,7 @@ def main(argv=sys.argv[1:]):
 
     # if we have specified a config file, make sure it exists and abort if not
     if args.config_file is not None and not os.path.exists(args.config_file):
-        print("Could not find config file '%s'" % args.config_file,
-              file=sys.stderr)
+        print("Could not find config file '%s'" % args.config_file, file=sys.stderr)
         return 1
 
     if args.xunit_file:
@@ -67,9 +66,7 @@ def main(argv=sys.argv[1:]):
         print("No files found", file=sys.stderr)
         return 1
 
-    bin_names = [
-        "black",
-    ]
+    bin_names = ["black"]
     black_bin = find_executable(bin_names)
     if not black_bin:
         print(
@@ -145,10 +142,10 @@ def main(argv=sys.argv[1:]):
         file_name = os.path.basename(args.xunit_file)
         suffix = ".xml"
         if file_name.endswith(suffix):
-            file_name = file_name[0 : -len(suffix)]
+            file_name = file_name[0: -len(suffix)]
             suffix = ".xunit"
             if file_name.endswith(suffix):
-                file_name = file_name[0 : -len(suffix)]
+                file_name = file_name[0: -len(suffix)]
         testname = "%s.%s" % (folder_name, file_name)
 
         xml = get_xunit_content(report, testname, time.time() - start_time)
@@ -260,10 +257,7 @@ def get_xunit_content(report, testname, elapsed):
 
         else:
             # if there are no replacements report a single successful test
-            data = {
-                "quoted_location": quoteattr(filename),
-                "testname": testname,
-            }
+            data = {"quoted_location": quoteattr(filename), "testname": testname}
             xml += (
                 """  <testcase
     name=%(quoted_location)s
@@ -274,7 +268,7 @@ def get_xunit_content(report, testname, elapsed):
 
     # output list of checked files
     data = {
-        "escaped_files": escape("".join(["\n* %s" % r for r in sorted(report.keys())])),
+        "escaped_files": escape("".join(["\n* %s" % r for r in sorted(report.keys())]))
     }
     xml += (
         """  <system-out>Checked files:%(escaped_files)s</system-out>
