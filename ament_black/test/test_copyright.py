@@ -1,4 +1,4 @@
-# Copyright 2015 Open Source Robotics Foundation, Inc.
+# Copyright 2019 Picknik Robotics.
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -19,5 +19,5 @@ import pytest
 @pytest.mark.copyright
 @pytest.mark.linter
 def test_copyright():
-    rc = main(argv=["ament_clang_format", "test"])
-    assert rc == 0, "Found errors"
+    rc = main(argv=['ament_black', 'test'])
+    assert rc == 0, 'Found errors'

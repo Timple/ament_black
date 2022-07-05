@@ -21,36 +21,37 @@ import sys
 import time
 from xml.sax.saxutils import escape
 from xml.sax.saxutils import quoteattr
+
 from unidiff import PatchSet
 
 
 def main(argv=sys.argv[1:]):
-    extensions = ["py"]
+    extensions = ['py']
 
     parser = argparse.ArgumentParser(
-        description="Check code style using black.",
+        description='Check code style using black.',
         formatter_class=argparse.ArgumentDefaultsHelpFormatter,
     )
     parser.add_argument(
-        "paths",
-        nargs="*",
+        'paths',
+        nargs='*',
         default=[os.curdir],
-        help="The files or directories to check. For directories files ending "
-        "in %s will be considered." % ", ".join(["'.%s'" % e for e in extensions]),
+        help='The files or directories to check. For directories files ending '
+        'in %s will be considered.' % ', '.join(["'.%s'" % e for e in extensions]),
     )
     parser.add_argument(
-        "--config",
-        metavar="path",
+        '--config',
+        metavar='path',
         default=None,
-        dest="config_file",
-        help="The config file",
+        dest='config_file',
+        help='The config file',
     )
     parser.add_argument(
-        "--reformat", action="store_true", help="Reformat the files in place"
+        '--reformat', action='store_true', help='Reformat the files in place'
     )
     # not using a file handle directly
     # in order to prevent leaving an empty file when something fails early
-    parser.add_argument("--xunit-file", help="Generate a xunit compliant XML file")
+    parser.add_argument('--xunit-file', help='Generate a xunit compliant XML file')
     args = parser.parse_args(argv)
 
     # if we have specified a config file, make sure it exists and abort if not
@@ -63,15 +64,15 @@ def main(argv=sys.argv[1:]):
 
     files = get_files(args.paths, extensions)
     if not files:
-        print("No files found", file=sys.stderr)
+        print('No files found', file=sys.stderr)
         return 1
 
-    bin_names = ["black"]
+    bin_names = ['black']
     black_bin = find_executable(bin_names)
     if not black_bin:
         print(
-            "Could not find %s executable"
-            % " / ".join(["'%s'" % n for n in bin_names]),
+            'Could not find %s executable'
+            % ' / '.join(["'%s'" % n for n in bin_names]),
             file=sys.stderr,
         )
         return 1
@@ -79,13 +80,13 @@ def main(argv=sys.argv[1:]):
     report = []
 
     # invoke black
-    cmd = [black_bin, "--diff"]
+    cmd = [black_bin, '--diff']
     if args.config_file is not None:
-        cmd.extend(["--config", args.config_file])
+        cmd.extend(['--config', args.config_file])
     cmd.extend(files)
 
     proc = subprocess.Popen(
-        cmd, stdout=subprocess.PIPE, stderr=subprocess.PIPE, encoding="utf-8"
+        cmd, stdout=subprocess.PIPE, stderr=subprocess.PIPE, encoding='utf-8'
     )
     output, _ = proc.communicate()
 
@@ -111,7 +112,7 @@ def main(argv=sys.argv[1:]):
     if args.reformat and changed_files:
         cmd = [black_bin]
         if args.config_file is not None:
-            cmd.extend(["--config", args.config_file])
+            cmd.extend(['--config', args.config_file])
         cmd.extend(files)
         try:
             subprocess.check_call(cmd)
@@ -127,11 +128,11 @@ def main(argv=sys.argv[1:]):
     file_count = sum(1 if report[k] else 0 for k in report.keys())
     replacement_count = sum(len(r) for r in report.values())
     if not file_count:
-        print("No problems found")
+        print('No problems found')
         rc = 0
     else:
         print(
-            "%d files with %d code style divergences" % (file_count, replacement_count),
+            '%d files with %d code style divergences' % (file_count, replacement_count),
             file=sys.stderr,
         )
         rc = 1
@@ -140,26 +141,26 @@ def main(argv=sys.argv[1:]):
     if args.xunit_file:
         folder_name = os.path.basename(os.path.dirname(args.xunit_file))
         file_name = os.path.basename(args.xunit_file)
-        suffix = ".xml"
+        suffix = '.xml'
         if file_name.endswith(suffix):
-            file_name = file_name[0: -len(suffix)]
-            suffix = ".xunit"
+            file_name = file_name[0:-len(suffix)]
+            suffix = '.xunit'
             if file_name.endswith(suffix):
-                file_name = file_name[0: -len(suffix)]
-        testname = "%s.%s" % (folder_name, file_name)
+                file_name = file_name[0:-len(suffix)]
+        testname = '%s.%s' % (folder_name, file_name)
 
         xml = get_xunit_content(report, testname, time.time() - start_time)
         path = os.path.dirname(os.path.abspath(args.xunit_file))
         if not os.path.exists(path):
             os.makedirs(path)
-        with open(args.xunit_file, "w") as f:
+        with open(args.xunit_file, 'w') as f:
             f.write(xml)
 
     return rc
 
 
 def find_executable(file_names):
-    paths = os.getenv("PATH").split(os.path.pathsep)
+    paths = os.getenv('PATH').split(os.path.pathsep)
     for file_name in file_names:
         for path in paths:
             file_path = os.path.join(path, file_name)
@@ -173,17 +174,17 @@ def get_files(paths, extensions):
     for path in paths:
         if os.path.isdir(path):
             for dirpath, dirnames, filenames in os.walk(path):
-                if "AMENT_IGNORE" in filenames:
+                if 'AMENT_IGNORE' in filenames:
                     dirnames[:] = []
                     continue
                 # ignore folder starting with . or _
-                dirnames[:] = [d for d in dirnames if d[0] not in [".", "_"]]
+                dirnames[:] = [d for d in dirnames if d[0] not in ['.', '_']]
                 dirnames.sort()
 
                 # select files by extension
                 for filename in sorted(filenames):
                     _, ext = os.path.splitext(filename)
-                    if ext in (".%s" % e for e in extensions):
+                    if ext in ('.%s' % e for e in extensions):
                         files.append(os.path.join(dirpath, filename))
         if os.path.isfile(path):
             files.append(path)
@@ -191,42 +192,42 @@ def get_files(paths, extensions):
 
 
 def find_index_of_line_start(data, offset):
-    index_1 = data.rfind("\n", 0, offset) + 1
-    index_2 = data.rfind("\r", 0, offset) + 1
+    index_1 = data.rfind('\n', 0, offset) + 1
+    index_2 = data.rfind('\r', 0, offset) + 1
     return max(index_1, index_2)
 
 
 def find_index_of_line_end(data, offset):
-    index_1 = data.find("\n", offset)
+    index_1 = data.find('\n', offset)
     if index_1 == -1:
         index_1 = len(data)
-    index_2 = data.find("\r", offset)
+    index_2 = data.find('\r', offset)
     if index_2 == -1:
         index_2 = len(data)
     return min(index_1, index_2)
 
 
 def get_line_number(data, offset):
-    return data[0:offset].count("\n") + data[0:offset].count("\r") + 1
+    return data[0:offset].count('\n') + data[0:offset].count('\r') + 1
 
 
 def get_xunit_content(report, testname, elapsed):
     test_count = sum(max(len(r), 1) for r in report.values())
     error_count = sum(len(r) for r in report.values())
     data = {
-        "testname": testname,
-        "test_count": test_count,
-        "error_count": error_count,
-        "time": "%.3f" % round(elapsed, 3),
+        'testname': testname,
+        'test_count': test_count,
+        'error_count': error_count,
+        'time': '%.3f' % round(elapsed, 3),
     }
     xml = (
-        """<?xml version="1.0" encoding="UTF-8"?>
+        """<?xml version='1.0' encoding='UTF-8'?>
 <testsuite
-  name="%(testname)s"
-  tests="%(test_count)d"
-  errors="0"
-  failures="%(error_count)d"
-  time="%(time)s"
+  name='%(testname)s'
+  tests='%(test_count)d'
+  errors='0'
+  failures='%(error_count)d'
+  time='%(time)s'
 >
 """
         % data
@@ -238,16 +239,16 @@ def get_xunit_content(report, testname, elapsed):
         if hunks:
             for hunk in hunks:
                 data = {
-                    "quoted_location": quoteattr(
-                        "%s:%d" % (filename, hunk.source_start)
+                    'quoted_location': quoteattr(
+                        '%s:%d' % (filename, hunk.source_start)
                     ),
-                    "testname": testname,
-                    "quoted_message": quoteattr(str(hunk)),
+                    'testname': testname,
+                    'quoted_message': quoteattr(str(hunk)),
                 }
                 xml += (
                     """  <testcase
     name=%(quoted_location)s
-    classname="%(testname)s"
+    classname='%(testname)s'
   >
       <failure message=%(quoted_message)s></failure>
   </testcase>
@@ -257,18 +258,18 @@ def get_xunit_content(report, testname, elapsed):
 
         else:
             # if there are no replacements report a single successful test
-            data = {"quoted_location": quoteattr(filename), "testname": testname}
+            data = {'quoted_location': quoteattr(filename), 'testname': testname}
             xml += (
                 """  <testcase
     name=%(quoted_location)s
-    classname="%(testname)s"/>
+    classname='%(testname)s'/>
 """
                 % data
             )
 
     # output list of checked files
     data = {
-        "escaped_files": escape("".join(["\n* %s" % r for r in sorted(report.keys())]))
+        'escaped_files': escape(''.join(['\n* %s' % r for r in sorted(report.keys())]))
     }
     xml += (
         """  <system-out>Checked files:%(escaped_files)s</system-out>
@@ -276,9 +277,9 @@ def get_xunit_content(report, testname, elapsed):
         % data
     )
 
-    xml += "</testsuite>\n"
+    xml += '</testsuite>\n'
     return xml
 
 
-if __name__ == "__main__":
+if __name__ == '__main__':
     sys.exit(main())

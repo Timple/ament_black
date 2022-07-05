@@ -1,4 +1,4 @@
-# Copyright 2015 Open Source Robotics Foundation, Inc.
+# Copyright 2019 Picknik Robotics.
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -19,5 +19,5 @@ import pytest
 @pytest.mark.linter
 @pytest.mark.pep257
 def test_pep257():
-    rc = main(argv=["ament_clang_format", "test"])
-    assert rc == 0, "Found docblock style errors"
+    rc = main(argv=['ament_black', 'test'])
+    assert rc == 0, 'Found docblock style errors'
