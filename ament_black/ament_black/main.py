@@ -53,6 +53,12 @@ def main(argv=sys.argv[1:]):
     parser.add_argument("--xunit-file", help="Generate a xunit compliant XML file")
     args = parser.parse_args(argv)
 
+    # if we have specified a config file, make sure it exists and abort if not
+    if args.config_file is not None and not os.path.exists(args.config_file):
+        print("Could not find config file '%s'" % args.config_file,
+              file=sys.stderr)
+        return 1
+
     if args.xunit_file:
         start_time = time.time()
 
