@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 
 # Copyright 2019 Picknik Robotics.
+# Copyright 2023 Dexory
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -15,12 +16,15 @@
 # limitations under the License.
 
 import argparse
+import contextlib
+import io
 import os
-import subprocess
 import sys
+import tempfile
 import time
-from xml.sax.saxutils import escape
-from xml.sax.saxutils import quoteattr
+from xml.sax.saxutils import escape, quoteattr
+
+from black import main as black
 from unidiff import PatchSet
 
 
@@ -66,36 +70,19 @@ def main(argv=sys.argv[1:]):
         print("No files found", file=sys.stderr)
         return 1
 
-    bin_names = ["black"]
-    black_bin = find_executable(bin_names)
-    if not black_bin:
-        print(
-            "Could not find %s executable"
-            % " / ".join(["'%s'" % n for n in bin_names]),
-            file=sys.stderr,
-        )
-        return 1
-
     report = []
 
     # invoke black
-    cmd = [black_bin, "--diff"]
+    black_args = []
     if args.config_file is not None:
-        cmd.extend(["--config", args.config_file])
-    cmd.extend(files)
+        black_args.extend(["--config", args.config_file])
+    black_args.extend(files)
 
-    proc = subprocess.Popen(
-        cmd, stdout=subprocess.PIPE, stderr=subprocess.PIPE, encoding="utf-8"
-    )
-    output, _ = proc.communicate()
-
-    if proc.returncode:
-        print(
-            "The invocation of '%s' failed with error code %d"
-            % (os.path.basename(black_bin), proc.returncode),
-            file=sys.stderr,
-        )
-        return 1
+    with tempfile.NamedTemporaryFile("w") as diff:
+        with contextlib.redirect_stdout(diff):
+            black([*black_args, "--diff"], standalone_mode=False)
+            with open(diff.name, "r") as file:
+                output = file.read()
 
     # output errors
     patch_set = PatchSet(output)
@@ -109,19 +96,7 @@ def main(argv=sys.argv[1:]):
 
     # overwrite original with reformatted files
     if args.reformat and changed_files:
-        cmd = [black_bin]
-        if args.config_file is not None:
-            cmd.extend(["--config", args.config_file])
-        cmd.extend(files)
-        try:
-            subprocess.check_call(cmd)
-        except subprocess.CalledProcessError as e:
-            print(
-                "The invocation of '%s' failed with error code %d: %s"
-                % (os.path.basename(black_bin), e.returncode, e),
-                file=sys.stderr,
-            )
-            return 1
+        black(black_args)
 
     # output summary
     file_count = sum(1 if report[k] else 0 for k in report.keys())
@@ -142,10 +117,10 @@ def main(argv=sys.argv[1:]):
         file_name = os.path.basename(args.xunit_file)
         suffix = ".xml"
         if file_name.endswith(suffix):
-            file_name = file_name[0: -len(suffix)]
+            file_name = file_name[0 : -len(suffix)]
             suffix = ".xunit"
             if file_name.endswith(suffix):
-                file_name = file_name[0: -len(suffix)]
+                file_name = file_name[0 : -len(suffix)]
         testname = "%s.%s" % (folder_name, file_name)
 
         xml = get_xunit_content(report, testname, time.time() - start_time)
@@ -156,16 +131,6 @@ def main(argv=sys.argv[1:]):
             f.write(xml)
 
     return rc
-
-
-def find_executable(file_names):
-    paths = os.getenv("PATH").split(os.path.pathsep)
-    for file_name in file_names:
-        for path in paths:
-            file_path = os.path.join(path, file_name)
-            if os.path.isfile(file_path) and os.access(file_path, os.X_OK):
-                return file_path
-    return None
 
 
 def get_files(paths, extensions):

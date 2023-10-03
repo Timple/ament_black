@@ -1,24 +1,27 @@
-from setuptools import find_packages
-from setuptools import setup
+from setuptools import find_packages, setup
 
 package_name = "ament_black"
 
 setup(
     name=package_name,
-    version="0.0.1",
+    version="0.14.2",
     packages=find_packages(exclude=["test"]),
     data_files=[
         ("share/" + package_name, ["package.xml"]),
         ("share/ament_index/resource_index/packages", ["resource/" + package_name]),
     ],
-    install_requires=["setuptools", "pyyaml"],
+    install_requires=[
+        "setuptools",
+        "unidiff",
+        "black",
+    ],
     zip_safe=False,
     author="Tyler Weaver",
     author_email="tylerjw@gmail.com",
     maintainer="Tyler Weaver",
     maintainer_email="tylerjw@gmail.com",
-    url="https://github.com/tylerjw/ament_black",
-    download_url="https://github.com/tylerjw/ament_black/releases",
+    url="https://github.com/nachovizzo/ament_black",
+    download_url="https://github.com/nachovizzo/ament_black/releases",
     keywords=["ROS"],
     classifiers=[
         "Intended Audience :: Developers",
