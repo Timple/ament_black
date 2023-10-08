@@ -6,8 +6,8 @@
   <description>
     The CMake API for ament_black to lint Python code using black.
   </description>
-  <maintainer email="tim.clephas@nobleo.nl">Tim Clephas</maintainer>
-  <author email="tylerjw@gmail.com">Tyler Weaver</author>
+  <maintainer email="tylerjw@gamil.com">Tyler Weaver</maintainer>
+  <maintainer email="ignacio@dexory.com">Ignacio Vizzo</maintainer>
   <license>Apache License 2.0</license>
 
   <buildtool_depend>ament_cmake_core</buildtool_depend>

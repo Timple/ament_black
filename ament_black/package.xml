@@ -7,18 +7,15 @@
     The ability to check code against style conventions using
     black and generate xUnit test result files.
   </description>
-  <maintainer email="tim.clephas@nobleo.nl">Tim Clephas</maintainer>
-  <author email="tylerjw@gamil.com">Tyler Weaver</author>
+  <maintainer email="tylerjw@gamil.com">Tyler Weaver</maintainer>
+  <maintainer email="ignacio@dexory.com">Ignacio Vizzo</maintainer>
   <license>Apache License 2.0</license>
-
   <exec_depend>black</exec_depend>
   <exec_depend>python3-unidiff</exec_depend>
-
   <test_depend>ament_copyright</test_depend>
   <test_depend>ament_flake8</test_depend>
   <test_depend>ament_pep257</test_depend>
   <test_depend>python3-pytest</test_depend>
-
   <export>
     <build_type>ament_python</build_type>
   </export>
