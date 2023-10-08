@@ -1,0 +1,22 @@
+repos:
+  - repo: https://github.com/pre-commit/pre-commit-hooks
+    rev: v4.4.0
+    hooks:
+      - id: end-of-file-fixer
+      - id: mixed-line-ending
+      - id: trailing-whitespace
+
+  - repo: https://github.com/psf/black
+    rev: 21.12b0
+    hooks:
+      - id: black
+
+  - repo: https://github.com/botsandus/ament_lint_hooks
+    rev: v0.0.9
+    hooks:
+      - id: ament_cpplint
+      - id: ament_flake8
+      - id: ament_lint_cmake
+      - id: ament_pep257
+      - id: ament_uncrustify
+      - id: ament_xmllint
