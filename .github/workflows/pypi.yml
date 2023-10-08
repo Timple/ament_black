@@ -4,6 +4,9 @@ on:
     branches:
       - main
       - master
+    # Publish to pypi only on tag events. To be replaced by "release" if more people use it
+    tags:
+      - v*
   pull_request:
   workflow_dispatch:
 
@@ -42,8 +45,6 @@ jobs:
           path: ./wheelhouse/*.whl
 
   pypi:
-    # Publish to pypi only on tag events. To be replaced by "release" if more people use it
-    if: github.event_name == 'push' && contains(github.ref, 'refs/tags/')
     needs: [build_wheel, build_sdist]
     runs-on: ubuntu-latest
     steps:
@@ -51,7 +52,6 @@ jobs:
         with:
           name: artifact
           path: dist
-
       - uses: pypa/gh-action-pypi-publish@release/v1
         with:
           password: ${{ secrets.PYPI_API_TOKEN }}
