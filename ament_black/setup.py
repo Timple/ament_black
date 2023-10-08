@@ -4,7 +4,7 @@ package_name = "ament_black"
 
 setup(
     name=package_name,
-    version="0.0.2",
+    version="0.0.3",
     packages=find_packages(exclude=["test"]),
     data_files=[
         ("share/" + package_name, ["package.xml"]),
@@ -13,7 +13,7 @@ setup(
     install_requires=[
         "setuptools",
         "unidiff",
-        "black",
+        "black==21.12b0",
     ],
     zip_safe=False,
     author="Tyler Weaver",
