@@ -11,8 +11,8 @@ setup(
         ("share/ament_index/resource_index/packages", ["resource/" + package_name]),
     ],
     install_requires=[
-        "setuptools",
-        "unidiff",
+        "setuptools==56.6.0",
+        "unidiff==0.5.5",
         "black==21.12b0",
     ],
     zip_safe=False,
