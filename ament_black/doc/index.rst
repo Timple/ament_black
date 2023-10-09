@@ -21,4 +21,4 @@ How to run the check from within a CMake ament package as part of the tests?
 ----------------------------------------------------------------------------
 
 The CMake integration is provided by the package `ament_cmake_black
-<https://github.com/tylerjw/ament_black/ament_cmake_black>`_.
+<https://github.com/botsandus/ament_black/ament_cmake_black>`_.

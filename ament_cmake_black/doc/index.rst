@@ -11,7 +11,7 @@ How to run the check from the command line?
 -------------------------------------------
 
 The command line tool is provided by the package `ament_black
-<https://github.com/tylerjw/ament_black>`_.
+<https://github.com/botsandus/ament_black>`_.
 
 
 How to run the check from within a CMake ament package as part of the tests?
