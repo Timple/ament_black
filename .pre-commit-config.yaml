@@ -11,12 +11,20 @@ repos:
     hooks:
       - id: black
 
+  - repo: https://github.com/cheshirekow/cmake-format-precommit
+    rev: v0.6.10
+    hooks:
+      - id: cmake-format
+
+  - repo: https://github.com/pycqa/isort
+    rev: 5.12.0
+    hooks:
+      - id: isort
+
   - repo: https://github.com/botsandus/ament_lint_hooks
     rev: v0.0.9
     hooks:
-      - id: ament_cpplint
       - id: ament_flake8
       - id: ament_lint_cmake
       - id: ament_pep257
-      - id: ament_uncrustify
       - id: ament_xmllint

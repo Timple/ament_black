@@ -5,14 +5,9 @@ project(ament_cmake_black NONE)
 find_package(ament_cmake_core REQUIRED)
 find_package(ament_cmake_test REQUIRED)
 
-ament_package(
-  CONFIG_EXTRAS "ament_cmake_black-extras.cmake"
-)
+ament_package(CONFIG_EXTRAS "ament_cmake_black-extras.cmake")
 
-install(
-  DIRECTORY cmake
-  DESTINATION share/${PROJECT_NAME}
-)
+install(DIRECTORY cmake DESTINATION share/${PROJECT_NAME})
 
 if(BUILD_TESTING)
   find_package(ament_cmake_copyright REQUIRED)
